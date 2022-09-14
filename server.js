@@ -11,6 +11,7 @@ const {readFromFile, writeToFile, readAndAppend} = require('./helpers/fsUtils.js
 
 
 const notes = require('./db/notes.json');
+const { randomUUID } = require('crypto');
 // Require the 'db.json' file.
 
 app.use(express.urlencoded({ extended: true }));
@@ -30,7 +31,26 @@ app.get("/api/notes", (req, res) => {
 });
 
 app.post("/api/notes", (req, res) => {
-    if (req.body.title && req.body.text) {
+
+    const { title, text} = req.body;
+    if (title && text) {
+        const newNote = {
+            title,
+            text,
+            id: randomUUID()
+        }
+        .then(readAndAppend('./db/notes.json'))
+    
+        const response = {
+            status: 'success',
+            body: newNote, 
+        };
+
+        res.status(201).json(response);
+    } else {
+        res.status(500).json('Error in posting new note')
+    }
+});
 
           // req.body title/text
           // New note = {}
@@ -38,11 +58,7 @@ app.post("/api/notes", (req, res) => {
           // text: req.body.text
           // also create unique id portion--uuid package
           // new note needs to be appended to db.json file
-        res.json('New note created!');
-      } else {
-        res.json('You broke it =(');
-      }
-})
+ 
 
 
 app.get('*', (req, res) => {
@@ -56,4 +72,4 @@ app.get('*', (req, res) => {
 app.listen(PORT, () => {
     console.log("Server Ready")
 });
-// Use the 'app' to 'listen' to a specific 'PORT'.
+// Use the 'app' to 'listen' to a specific 'PORT'
