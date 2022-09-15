@@ -43,10 +43,10 @@ app.post("/api/notes", (req, res) => {
 
         const noteString = JSON.stringify(newNote);
 
-        fs.writeFile('.db/notes.json', noteString, (err) =>
+        fs.readAndAppend('./db/notes.json', noteString, (err) =>
         err
         ? console.error(err)
-        : console.log('new note received'));
+        : console.log('New note written'));
        
         const response = {
             status: 'success',
