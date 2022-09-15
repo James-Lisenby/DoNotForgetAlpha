@@ -41,13 +41,8 @@ app.post("/api/notes", (req, res) => {
             id: randomUUID()
         };
 
-        const noteString = JSON.stringify(newNote);
 
-        fs.readAndAppend('./db/notes.json', noteString, (err) =>
-        err
-        ? console.error(err)
-        : console.log('New note written'));
-       
+        readAndAppend(newNote, './db/notes.json');
         const response = {
             status: 'success',
             body: newNote, 
@@ -64,11 +59,11 @@ app.post("/api/notes", (req, res) => {
  
 
 
+
+
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '/public/index.html'))
 });
-
-
 
 app.listen(PORT, () => {
     console.log("Server Ready")
